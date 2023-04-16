@@ -1076,6 +1076,22 @@ class Keyboard
     elsif keycode = KEYCODE_SFT[symbols[0]]
       modifier = 0b00100000
       keycodes = [keycode]
+    elsif @mouse && required?("mouse") && keycode = Mouse::KEYCODE[symbols[0]] && [:KC_WH_U, :KC_WH_D, :KC_WH_L, :KC_WH_R].include?(symbols[0])
+      x = if symbols[0] == :KC_WH_R
+        @mouse.wheel_speed
+      elsif symbols[0] == :KC_WH_L
+        -@mouse.wheel_speed
+      else
+        0
+      end
+      y = if symbols[0] == :KC_WH_U
+        @mouse.wheel_speed
+      elsif symbols[0] == :KC_WH_D
+        -@mouse.wheel_speed
+      else
+        0
+      end
+      USB.merge_mouse_report(0, 0, 0, x, y)
     else
       symbols.each do |symbol|
         if code = KEYCODE.index(symbol)
